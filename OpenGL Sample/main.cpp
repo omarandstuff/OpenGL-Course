@@ -3,7 +3,7 @@
 #include <GL/freeglut_ext.h>
 #include <cmath>
 #include <iostream>
-
+#include <Xinput.h>
 
 float quad[] =
 {
@@ -23,6 +23,8 @@ GLuint program_ID;
 GLuint quad_ID;
 GLuint quad_b_ID;
 GLuint quad_i_ID;
+
+XINPUT_STATE controller;
 
 float quad_left;
 float quad_top;
@@ -90,11 +92,11 @@ void idle(void)
 
 	float time = (current_time - last_time) / 1000.0f;
 
-	static float angle = 0.0f;
-	angle += time;
+	ZeroMemory(&controller, sizeof(XINPUT_STATE));
+	DWORD Result = XInputGetState(0, &controller);
 
-	quad_left = cos(angle);
-	quad_top = sin(angle);
+	quad_left = controller.Gamepad.sThumbLX / 32000.0f;
+	quad_top = controller.Gamepad.sThumbLY / 32000.0f;
 
 	last_time = current_time;
 	glutPostRedisplay();
